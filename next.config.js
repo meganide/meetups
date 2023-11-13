@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  reactStrictMode: true,
+  basePath: "meetups",
+  output: "export",
+}
 
 module.exports = nextConfig
