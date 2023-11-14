@@ -1,6 +1,7 @@
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials"
 
+import { comparePassword } from "@/lib/bcrypt"
 import db from "@/lib/db"
 
 import type { NextAuthOptions } from "next-auth"
@@ -26,20 +27,28 @@ const authOptions: NextAuthOptions = {
         },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
-        console.log(credentials)
-        console.log(req)
+      async authorize(credentials) {
+        const { email, password } = credentials
+
         // Add logic here to look up the user from the credentials supplied
-        const user = { id: "1", name: "J Smith", email: "jsmith@example.com" }
 
-        if (user) {
-          // Any object returned will be saved in `user` property of the JWT
-          return user
+        const user = await db.user.findUnique({
+          where: { email },
+        })
+
+        if (!user) {
+          return null
         }
-        // If you return null then an error will be displayed advising the user to check their details.
-        return null
 
-        // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
+        const isCorrectPassword = comparePassword(password, user.password)
+
+        if (!isCorrectPassword) {
+          // If you return null then an error will be displayed advising the user to check their details.
+          return null
+        }
+
+        // Any object returned will be saved in `user` property of the JWT
+        return { id: user.id, email: user.email }
       },
     }),
   ],

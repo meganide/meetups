@@ -1,14 +1,15 @@
-import { Button } from "@mui/material"
-import Rating from "@mui/material/Rating"
+import { getServerSession } from "next-auth"
 
-export default function Home() {
+import Signup from "@/components/Signup"
+import authOptions from "@/lib/auth"
+
+export default async function Home() {
+  // const { data: session, status } = useSession()
+  const session = await getServerSession(authOptions)
+
   return (
     <section>
-      <h1 className="text-center text-xl font-extrabold text-red-900">Home</h1>
-      <Button variant="contained" className="bg-purple-900 hover:bg-red-900">
-        helllooooooooo
-      </Button>
-      <Rating name="read-only" value={3} />
+      {session ? <p>You are logged in as {session.user.email}!</p> : <Signup />}
     </section>
   )
 }
