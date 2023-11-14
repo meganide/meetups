@@ -1,7 +1,3 @@
-"use client"
-
-import { useCallback, useState } from "react"
-
 import Avatar from "@mui/material/Avatar"
 import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
@@ -10,73 +6,26 @@ import Paper from "@mui/material/Paper"
 import TextField from "@mui/material/TextField"
 import Typography from "@mui/material/Typography"
 import Image from "next/image"
-import { signIn } from "next-auth/react"
+import Link from "next/link"
 
 import Logo from "@/app/icon.png"
+import Copyright from "@/components/Copyright"
 
-function Copyright() {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      className="mt-2"
-    >
-      {"Copyright © Meetups "}
-      {new Date().getFullYear()}.
-    </Typography>
-  )
+type SignupProps = {
+  title: string
+  linkText: string
+  navigateUrl: string
+  error: string
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void
 }
 
-export default function SignInSide() {
-  const [isSignUp, setIsSignUp] = useState(false)
-  const [error, setError] = useState("")
-
-  const handleSubmit = useCallback(
-    async (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault()
-      setError("")
-      const data = new FormData(event.currentTarget)
-
-      const email = data.get("email")
-      const password = data.get("password")
-      const credentials = {
-        email,
-        password,
-      }
-
-      if (isSignUp) {
-        try {
-          const response = await fetch("/api/signup", {
-            method: "POST",
-            body: JSON.stringify(credentials),
-            headers: { "Content-Type": "application/json" },
-          })
-          const data = await response.json()
-
-          if (!response.ok) {
-            setError(data.error)
-          }
-
-          setIsSignUp(false)
-        } catch (error) {
-          console.log(error)
-          setError("Something went wrong! Try again!")
-        }
-      } else {
-        const response = await signIn("credentials", {
-          redirect: false,
-          email,
-          password,
-        })
-        if (!response?.ok) {
-          setError("Invalid credentials!")
-        }
-      }
-    },
-    [isSignUp]
-  )
-
+export default function Auth({
+  title,
+  linkText,
+  navigateUrl,
+  error,
+  onSubmit,
+}: SignupProps) {
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>
       <Grid
@@ -109,9 +58,9 @@ export default function SignInSide() {
             <Image src={Logo} alt="Logo" />
           </Avatar>
           <Typography component="h1" variant="h5">
-            {isSignUp ? "Sign up" : "Sign in"}
+            {title}
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+          <Box component="form" onSubmit={onSubmit} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -145,19 +94,16 @@ export default function SignInSide() {
               sx={{ mt: 3, mb: 2 }}
               className="bg-blue-500"
             >
-              {isSignUp ? "Sign Up" : "Sign In"}
+              {title}
             </Button>
             <Grid container>
               <Grid item>
-                <Typography
-                  variant="body1"
-                  className="cursor-pointer italic text-blue-800 hover:text-blue-950"
-                  onClick={() => setIsSignUp((prev) => !prev)}
+                <Link
+                  className="text-blue-600 hover:text-blue-900"
+                  href={navigateUrl}
                 >
-                  {isSignUp
-                    ? "Already have an account? Sign in"
-                    : "Don't have an account? Sign Up"}
-                </Typography>
+                  {linkText}
+                </Link>
               </Grid>
             </Grid>
             <Copyright />

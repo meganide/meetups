@@ -13,25 +13,15 @@ const authOptions: NextAuthOptions = {
   },
   providers: [
     CredentialsProvider({
-      // The name to display on the sign in form (e.g. "Sign in with...")
       name: "Credentials",
-      // `credentials` is used to generate a form on the sign in page.
-      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-      // e.g. domain, username, password, 2FA token, etc.
-      // You can pass any HTML attribute to the <input> tag through the object.
-      credentials: {
-        username: {
-          label: "Email",
-          type: "email",
-          placeholder: "jsmith@gmail.com",
-        },
-        password: { label: "Password", type: "password" },
-      },
+      credentials: {},
       async authorize(credentials) {
-        const { email, password } = credentials
+        const { email, password } = credentials as {
+          email: string
+          password: string
+        }
 
         // Add logic here to look up the user from the credentials supplied
-
         const user = await db.user.findUnique({
           where: { email },
         })
