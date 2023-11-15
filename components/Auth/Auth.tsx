@@ -71,6 +71,7 @@ export default function Auth({
               name="email"
               autoComplete="email"
               autoFocus
+              color="warning"
             />
             <TextField
               margin="normal"
@@ -81,6 +82,7 @@ export default function Auth({
               type="password"
               id="password"
               autoComplete="current-password"
+              color="warning"
             />
             {error && (
               <Typography variant="body2" color="red">
@@ -92,7 +94,7 @@ export default function Auth({
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              className="bg-blue-500"
+              className="bg-red-500 hover:bg-red-900"
             >
               {title}
             </Button>
