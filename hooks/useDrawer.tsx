@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 export function useDrawer() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
 
   const handleDrawerClose = () => {
     setOpen(false)
