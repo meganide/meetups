@@ -1,6 +1,8 @@
 import { Inter } from "next/font/google"
 
 import Providers from "@/app/providers"
+import RequireAuth from "@/components/Auth/RequireAuth"
+import MainLayout from "@/components/Layouts/MainLayout"
 
 import type { Metadata } from "next"
 
@@ -22,7 +24,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <main>{children}</main>
+          <RequireAuth>
+            <MainLayout drawerWidth={240}>{children}</MainLayout>
+          </RequireAuth>
         </Providers>
       </body>
     </html>

@@ -12,7 +12,32 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(cuid())
-  email    String @unique
+  id       String   @id @default(cuid())
+  email    String   @unique
   password String
+  meetups  Meetup[]
+}
+
+model Meetup {
+  id              String   @id @default(cuid())
+  name            String
+  date            DateTime
+  location        String
+  description     String
+  category        String
+  city            String
+  keywords        String[]
+  numberOfTickets Int
+  organizer       String
+  attendees       User[]
+  reviews         Review[]
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  description String
+  rating      Int
+  createdAt   DateTime @default(now())
+  meetupId    String
+  meetup      Meetup   @relation(fields: [meetupId], references: [id])
 }

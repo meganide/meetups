@@ -1,6 +1,6 @@
 "use client"
 
-import Auth from "@/components/Auth"
+import Auth from "@/components/Auth/Auth"
 import { useAuth } from "@/hooks/useAuth"
 
 export default function Signup() {
