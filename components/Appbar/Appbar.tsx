@@ -25,7 +25,7 @@ export default function Appbar({
     <MUIAppBar
       position="fixed"
       open={open}
-      drawerWidth={drawerWidth}
+      drawerwidth={drawerWidth}
       color="error"
     >
       <Toolbar className="flex justify-between">
