@@ -9,12 +9,14 @@ type AutocompleteProps = {
   options: string[]
   inputValue: string
   onInputChange: (newValue: string) => void
+  label: string
 }
 
 export default function Autocomplete({
   options,
   inputValue,
   onInputChange,
+  label,
 }: AutocompleteProps) {
   return (
     <Stack spacing={2} sx={{ width: 300 }}>
@@ -26,9 +28,7 @@ export default function Autocomplete({
           onInputChange(newValue)
         }
         options={options}
-        renderInput={(params) => (
-          <TextField {...params} label="Search meetups" />
-        )}
+        renderInput={(params) => <TextField {...params} label={label} />}
       />
     </Stack>
   )
