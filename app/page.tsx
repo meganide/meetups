@@ -3,19 +3,12 @@
 import Box from "@mui/material/Box"
 import CircularProgress from "@mui/material/CircularProgress"
 
-import Autocomplete from "@/components/Autocomplete"
+import MeetupFilters from "@/components/Meetup/MeetupFilters"
 import MeetupList from "@/components/Meetup/MeetupList"
 import { useMeetups } from "@/hooks/useMeetups"
 
 export default function Home() {
-  const {
-    error,
-    isLoading,
-    matchingMeetups,
-    searchOptions,
-    searchQuery,
-    setSearchQuery,
-  } = useMeetups()
+  const { error, isLoading, matchingMeetups, ...filterOptions } = useMeetups()
 
   if (error) return <div>Failed to load meetups</div>
 
@@ -28,13 +21,7 @@ export default function Home() {
         </Box>
       ) : (
         <section>
-          <section className="mb-3">
-            <Autocomplete
-              options={searchOptions ?? []}
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-            />
-          </section>
+          <MeetupFilters {...filterOptions} />
           <section className="flex max-h-[600px] flex-col gap-3 overflow-y-auto">
             {matchingMeetups && matchingMeetups.length > 0 ? (
               <MeetupList meetups={matchingMeetups} />
