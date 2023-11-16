@@ -1,13 +1,21 @@
-import { useMemo, useState } from "react"
+import { useCallback, useMemo, useReducer } from "react"
 
 import { useQuery } from "@tanstack/react-query"
 
 import { httpGetMeetups } from "@/lib/httpRequests/meetups"
+import {
+  initalStateMeetupFilterReducer,
+  meetupFilterReducer,
+} from "@/reducers/meetupFilterReducer"
 
 import type { Meetup } from "@prisma/client"
 
 export function useMeetups() {
-  const [searchQuery, setSearchQuery] = useState<string>("")
+  const [meetupFilterState, dispatchMeetupFilter] = useReducer(
+    meetupFilterReducer,
+    initalStateMeetupFilterReducer
+  )
+
   const { data, error, isLoading } = useQuery<{ meetups: Meetup[] }>({
     queryKey: ["meetups"],
     queryFn: httpGetMeetups,
@@ -23,21 +31,30 @@ export function useMeetups() {
     () =>
       data?.meetups.filter(
         (meetup: Meetup) =>
-          !searchQuery ||
-          meetup.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          !meetupFilterState.searchQuery ||
+          meetup.name
+            .toLowerCase()
+            .includes(meetupFilterState.searchQuery.toLowerCase()) ||
           meetup.keywords.some((keyword) =>
-            keyword.toLowerCase().includes(searchQuery.toLowerCase())
+            keyword
+              .toLowerCase()
+              .includes(meetupFilterState.searchQuery.toLowerCase())
           )
       ),
-    [data?.meetups, searchQuery]
+    [data?.meetups, meetupFilterState.searchQuery]
   )
 
+  const handleSearchInputChange = useCallback((newValue: string) => {
+    dispatchMeetupFilter({ type: "CHANGE_SEARCH_QUERY", payload: newValue })
+  }, [])
+
   return {
-    searchQuery,
-    setSearchQuery,
+    meetupFilterState,
+    dispatchMeetupFilter,
     error,
     isLoading,
     searchOptions,
     matchingMeetups,
+    handleSearchInputChange,
   }
 }

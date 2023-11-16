@@ -2,6 +2,7 @@
 
 import Box from "@mui/material/Box"
 import CircularProgress from "@mui/material/CircularProgress"
+import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 
 import Autocomplete from "@/components/Autocomplete"
 import MeetupList from "@/components/Meetup/MeetupList"
@@ -13,8 +14,8 @@ export default function Home() {
     isLoading,
     matchingMeetups,
     searchOptions,
-    searchQuery,
-    setSearchQuery,
+    meetupFilterState,
+    handleSearchInputChange,
   } = useMeetups()
 
   if (error) return <div>Failed to load meetups</div>
@@ -28,11 +29,16 @@ export default function Home() {
         </Box>
       ) : (
         <section>
-          <section className="mb-3">
+          <section className="mb-3 flex gap-2">
             <Autocomplete
               options={searchOptions ?? []}
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
+              inputValue={meetupFilterState.searchQuery}
+              onInputChange={handleSearchInputChange}
+            />
+            <DatePicker
+              label="Date"
+              slotProps={{ field: { clearable: true } }}
+              format="YYYY-MM-DD"
             />
           </section>
           <section className="flex max-h-[600px] flex-col gap-3 overflow-y-auto">
