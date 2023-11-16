@@ -2,6 +2,8 @@ import { NextResponse } from "next/server"
 
 import db from "@/lib/db"
 
+export const dynamic = "force-dynamic"
+
 export async function GET() {
   try {
     const meetups = await db.meetup.findMany({
@@ -15,6 +17,7 @@ export async function GET() {
         reviews: true,
       },
     })
+    console.log(meetups)
     return NextResponse.json({ meetups }, { status: 200 })
   } catch (err) {
     console.log(err)

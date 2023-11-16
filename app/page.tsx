@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-expressions */
+// eslint-disable-next-line prettier/prettier
+
 "use client"
 
 import Box from "@mui/material/Box"
@@ -6,6 +9,8 @@ import CircularProgress from "@mui/material/CircularProgress"
 import MeetupFilters from "@/components/Meetup/MeetupFilters"
 import MeetupList from "@/components/Meetup/MeetupList"
 import { useMeetups } from "@/hooks/useMeetups"
+
+export const dynamic = "force-dynamic"
 
 export default function Home() {
   const { error, isLoading, matchingMeetups, ...filterOptions } = useMeetups()
