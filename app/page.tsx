@@ -3,6 +3,7 @@
 import Box from "@mui/material/Box"
 import CircularProgress from "@mui/material/CircularProgress"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
+import dayjs from "dayjs"
 
 import Autocomplete from "@/components/Autocomplete"
 import MeetupList from "@/components/Meetup/MeetupList"
@@ -16,6 +17,7 @@ export default function Home() {
     searchOptions,
     meetupFilterState,
     handleSearchInputChange,
+    handleDateChange,
   } = useMeetups()
 
   if (error) return <div>Failed to load meetups</div>
@@ -37,8 +39,17 @@ export default function Home() {
             />
             <DatePicker
               label="Date"
-              slotProps={{ field: { clearable: true } }}
+              slotProps={{
+                field: { clearable: true, onClear: () => handleDateChange("") },
+              }}
               format="YYYY-MM-DD"
+              value={meetupFilterState.date}
+              onChange={(newValue: string | null) => {
+                if (newValue) {
+                  const formattedDate = dayjs(newValue).format("YYYY-MM-DD")
+                  handleDateChange(formattedDate)
+                }
+              }}
             />
           </section>
           <section className="flex max-h-[600px] flex-col gap-3 overflow-y-auto">
