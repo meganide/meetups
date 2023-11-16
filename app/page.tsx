@@ -1,29 +1,49 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
+import Box from "@mui/material/Box"
+import CircularProgress from "@mui/material/CircularProgress"
 
-import Meetupcard from "@/components/Meetup/Meetupcard"
-import { httpGetMeetups } from "@/lib/httpRequests/meetups"
-
-import type { Meetup } from "@prisma/client"
+import Autocomplete from "@/components/Autocomplete"
+import MeetupList from "@/components/Meetup/MeetupList"
+import { useMeetups } from "@/hooks/useMeetups"
 
 export default function Home() {
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["meetups"],
-    queryFn: httpGetMeetups,
-  })
+  const {
+    error,
+    isLoading,
+    matchingMeetups,
+    searchOptions,
+    searchQuery,
+    setSearchQuery,
+  } = useMeetups()
 
   if (error) return <div>Failed to load meetups</div>
-  if (isLoading) return <div>Loading...</div>
 
   return (
     <section>
-      <h1 className="my-5 text-xl font-extrabold">Upcoming Meetups</h1>
-      <section className="flex flex-col gap-3">
-        {data.meetups.map((meetup: Meetup) => (
-          <Meetupcard key={meetup.id} meetup={meetup} />
-        ))}
-      </section>
+      <h1 className="my-5 text-2xl font-extrabold">Upcoming Meetups</h1>
+      {isLoading ? (
+        <Box sx={{ display: "flex", justifyContent: "center", marginTop: 5 }}>
+          <CircularProgress color="error" size="3rem" />
+        </Box>
+      ) : (
+        <section>
+          <section className="mb-3">
+            <Autocomplete
+              options={searchOptions ?? []}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+            />
+          </section>
+          <section className="flex max-h-[600px] flex-col gap-3 overflow-y-auto">
+            {matchingMeetups && matchingMeetups.length > 0 ? (
+              <MeetupList meetups={matchingMeetups} />
+            ) : (
+              "No meetups found"
+            )}
+          </section>
+        </section>
+      )}
     </section>
   )
 }
