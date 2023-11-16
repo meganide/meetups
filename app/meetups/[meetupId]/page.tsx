@@ -1,36 +1,29 @@
 "use client"
 
-import { useMemo } from "react"
-
 import ArrowBackIcon from "@mui/icons-material/ArrowBack"
-import { useQuery } from "@tanstack/react-query"
 import Image from "next/image"
 import Link from "next/link"
 
-import { httpGetMeetups } from "@/lib/httpRequests/meetups"
-
-import type { MeetupWithAttendees } from "@/types/general"
-import type { Meetup } from "@prisma/client"
+import { useMeetup } from "@/hooks/useMeetup"
 
 export default function MeetupPage({
   params,
 }: {
   params: { meetupId: string }
 }) {
-  const { data } = useQuery<{
-    meetups: MeetupWithAttendees[]
-  }>({
-    queryKey: ["meetups"],
-    queryFn: httpGetMeetups,
-  })
+  const { meetup, handleRegistration, joinMeetupData, isPending, hasJoined } =
+    useMeetup(params.meetupId)
 
-  const meetup = useMemo(
-    () => data?.meetups.find((meetup) => meetup.id === params.meetupId),
-    [data?.meetups, params.meetupId]
-  )
+  function buttonStates() {
+    if (hasJoined) {
+      return "Confirmed"
+    }
 
-  const handleRegistration = () => {
-    console.log("User registered for", meetup?.name)
+    if (isPending) {
+      return "Loading..."
+    }
+
+    return "Register"
   }
 
   return (
@@ -82,11 +75,15 @@ export default function MeetupPage({
             </div>
             <button
               type="button"
-              className="mt-4 self-start rounded bg-red-500 px-6 py-2 text-white hover:bg-red-600"
+              className="mt-4 self-start rounded bg-green-500 px-6 py-2 text-white hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-50"
               onClick={handleRegistration}
+              disabled={isPending || hasJoined}
             >
-              Register
+              {buttonStates()}
             </button>
+            {joinMeetupData?.error && (
+              <p className="mt-2 text-red-800">{joinMeetupData.error}</p>
+            )}
           </div>
         </div>
       </div>
