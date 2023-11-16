@@ -1,15 +1,17 @@
 "use client"
 
-import useSWR from "swr"
+import { useQuery } from "@tanstack/react-query"
 
 import Meetupcard from "@/components/Meetup/Meetupcard"
+import { httpGetMeetups } from "@/lib/httpRequests/meetups"
 
 import type { Meetup } from "@prisma/client"
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
-
 export default function Home() {
-  const { data, error, isLoading } = useSWR("/api/meetups", fetcher)
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["meetups"],
+    queryFn: httpGetMeetups,
+  })
 
   if (error) return <div>Failed to load meetups</div>
   if (isLoading) return <div>Loading...</div>
