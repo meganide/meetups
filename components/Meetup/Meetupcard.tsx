@@ -10,8 +10,8 @@ type MeetupCardProps = {
 export default function Meetupcard({ meetup }: MeetupCardProps) {
   return (
     <Link href={`/meetups/${meetup.id}`}>
-      <article className="flex w-full cursor-pointer overflow-hidden rounded-lg bg-red-50 shadow-lg transition-shadow duration-300 hover:bg-red-100">
-        <section className="relative">
+      <article className="flex w-full cursor-pointer rounded-lg bg-red-50 shadow-lg transition-shadow duration-300 hover:bg-red-100">
+        <section className="relative overflow-hidden rounded-lg">
           <Image
             width={200}
             height={120}
