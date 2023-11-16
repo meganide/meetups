@@ -3,6 +3,9 @@ import type { ReviewOptions } from "@/types/general"
 export async function httpGetMeetups() {
   const res = await fetch("/api/meetups", {
     cache: "no-cache",
+    headers: {
+      cache: "",
+    },
   })
   return res.json()
 }
