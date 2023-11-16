@@ -22,13 +22,7 @@ export default function Home() {
       ) : (
         <section>
           <MeetupFilters {...filterOptions} />
-          <section className="flex max-h-[600px] flex-col gap-3 overflow-y-auto">
-            {matchingMeetups && matchingMeetups.length > 0 ? (
-              <MeetupList meetups={matchingMeetups} />
-            ) : (
-              "No meetups found"
-            )}
-          </section>
+          <MeetupList meetups={matchingMeetups} />
         </section>
       )}
     </section>
