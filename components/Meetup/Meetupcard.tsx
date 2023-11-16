@@ -1,13 +1,17 @@
 import Image from "next/image"
 import Link from "next/link"
 
-import type { Meetup } from "@prisma/client"
+import type { MeetupWithAttendees } from "@/types/general"
 
 type MeetupCardProps = {
-  meetup: Meetup
+  meetup: MeetupWithAttendees
+  hideTicketsLeft?: boolean
 }
 
-export default function Meetupcard({ meetup }: MeetupCardProps) {
+export default function Meetupcard({
+  meetup,
+  hideTicketsLeft,
+}: MeetupCardProps) {
   return (
     <Link href={`/meetups/${meetup.id}`}>
       <article className="flex w-full cursor-pointer rounded-lg bg-red-50 shadow-lg transition-shadow duration-300 hover:bg-red-100">

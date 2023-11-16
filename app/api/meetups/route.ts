@@ -8,6 +8,11 @@ export async function GET() {
       orderBy: {
         date: "asc",
       },
+      include: {
+        attendees: {
+          select: { id: true },
+        },
+      },
     })
     return NextResponse.json({ meetups }, { status: 200 })
   } catch (err) {
