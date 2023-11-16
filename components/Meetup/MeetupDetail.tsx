@@ -1,19 +1,19 @@
-"use client"
-
-import { useQuery } from "@tanstack/react-query"
 import Image from "next/image"
 
-export default function MeetupPage({
-  params,
-}: {
-  params: { meetupId: string }
-}) {
+import type { Meetup } from "@prisma/client"
+
+type MeetupDetailProps = {
+  meetup: Meetup
+}
+
+export default function MeetupDetail({ meetup }: MeetupDetailProps) {
   const handleRegistration = () => {
-    console.log("User registered for", meetup.name)
+    console.log("User registered for", meetup?.name)
   }
 
-  const { data } = useQuery({ queryKey: ["meetups"] })
-  console.log(data)
+  if (!meetup) {
+    return <div>Loading meetup details...</div>
+  }
 
   return (
     <section className="p-4">
@@ -31,7 +31,7 @@ export default function MeetupPage({
       </div>
       <button
         type="button"
-        className="mt-4 rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+        className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
         onClick={handleRegistration}
       >
         Register
