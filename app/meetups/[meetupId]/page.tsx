@@ -4,15 +4,29 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack"
 import Image from "next/image"
 import Link from "next/link"
 
+import AddReview from "@/components/Review/AddReview"
+import Reviews from "@/components/Review/Reviews"
 import { useMeetup } from "@/hooks/useMeetup"
+import { hasPassed } from "@/lib/date"
 
 export default function MeetupPage({
   params,
 }: {
   params: { meetupId: string }
 }) {
-  const { meetup, handleRegistration, joinMeetupData, isPending, hasJoined } =
-    useMeetup(params.meetupId)
+  const {
+    meetup,
+    handleRegistration,
+    joinMeetupData,
+    isPending,
+    hasJoined,
+    handleAddReview,
+    reviewOptions,
+    handleChangeRating,
+    handleChangeComment,
+    isPendingAddReview,
+    addReviewData,
+  } = useMeetup(params.meetupId)
 
   function buttonStates() {
     if (hasJoined) {
@@ -73,19 +87,34 @@ export default function MeetupPage({
                 Tickets: <strong>{meetup?.numberOfTickets}</strong>
               </p>
             </div>
-            <button
-              type="button"
-              className="mt-4 self-start rounded bg-green-500 px-6 py-2 text-white hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-50"
-              onClick={handleRegistration}
-              disabled={isPending || hasJoined}
-            >
-              {buttonStates()}
-            </button>
+            <section className="flex gap-3">
+              <button
+                type="button"
+                className="mt-4 self-start rounded bg-green-500 px-6 py-2 text-white hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={handleRegistration}
+                disabled={isPending || hasJoined}
+              >
+                {buttonStates()}
+              </button>
+            </section>
             {joinMeetupData?.error && (
               <p className="mt-2 text-red-800">{joinMeetupData.error}</p>
             )}
           </div>
         </div>
+        <Reviews reviews={meetup?.reviews ?? []} />
+        {hasJoined && meetup && hasPassed(meetup.date) && (
+          <AddReview
+            reviewOptions={reviewOptions}
+            handleChangeRating={handleChangeRating}
+            handleChangeComment={handleChangeComment}
+            handleAddReview={handleAddReview}
+            isPendingAddReview={isPendingAddReview}
+          />
+        )}
+        {addReviewData?.error && (
+          <p className="mt-2 text-red-800">{addReviewData.error}</p>
+        )}
       </div>
     </section>
   )

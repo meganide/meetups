@@ -12,6 +12,7 @@ export async function GET() {
         attendees: {
           select: { id: true },
         },
+        reviews: true,
       },
     })
     return NextResponse.json({ meetups }, { status: 200 })

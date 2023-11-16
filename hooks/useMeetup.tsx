@@ -1,13 +1,23 @@
-import { useCallback, useMemo } from "react"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useCallback, useMemo, useState } from "react"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useSession } from "next-auth/react"
 
-import { httpGetMeetups, httpJoinMeetup } from "@/lib/httpRequests/meetups"
+import {
+  httpAddReview,
+  httpGetMeetups,
+  httpJoinMeetup,
+} from "@/lib/httpRequests/meetups"
 
 import type { MeetupWithAttendees } from "@/types/general"
 
 export function useMeetup(meetupId: string) {
+  const [reviewOptions, setReviewOptions] = useState({
+    rating: 5,
+    comment: "",
+  })
+
   const { data: session } = useSession()
   const { data } = useQuery<{
     meetups: MeetupWithAttendees[]
@@ -20,13 +30,27 @@ export function useMeetup(meetupId: string) {
 
   const {
     data: joinMeetupData,
-    error,
     isPending,
-    mutateAsync,
+    mutateAsync: mutateJoinMeetupAsync,
   } = useMutation({
     mutationFn: async () => httpJoinMeetup(meetupId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["meetups"] })
+    },
+  })
+
+  const {
+    data: addReviewData,
+    isPending: isPendingAddReview,
+    mutateAsync: mutateAddReviewAsync,
+  } = useMutation({
+    mutationFn: async () => httpAddReview(meetupId, reviewOptions),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["meetups"] })
+      setReviewOptions({
+        rating: 5,
+        comment: "",
+      })
     },
   })
 
@@ -42,8 +66,40 @@ export function useMeetup(meetupId: string) {
   )
 
   const handleRegistration = useCallback(async () => {
-    await mutateAsync()
-  }, [mutateAsync])
+    await mutateJoinMeetupAsync()
+  }, [mutateJoinMeetupAsync])
 
-  return { meetup, handleRegistration, joinMeetupData, isPending, hasJoined }
+  const handleAddReview = useCallback(async () => {
+    await mutateAddReviewAsync()
+  }, [mutateAddReviewAsync])
+
+  const handleChangeRating = useCallback((newValue: number | null) => {
+    if (newValue) {
+      setReviewOptions((prev) => ({
+        ...prev,
+        rating: newValue,
+      }))
+    }
+  }, [])
+
+  const handleChangeComment = useCallback((newValue: string) => {
+    setReviewOptions((prev) => ({
+      ...prev,
+      comment: newValue,
+    }))
+  }, [])
+
+  return {
+    meetup,
+    handleRegistration,
+    joinMeetupData,
+    isPending,
+    hasJoined,
+    handleAddReview,
+    reviewOptions,
+    handleChangeRating,
+    handleChangeComment,
+    addReviewData,
+    isPendingAddReview,
+  }
 }

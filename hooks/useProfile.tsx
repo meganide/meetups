@@ -3,6 +3,7 @@ import { useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { useSession } from "next-auth/react"
 
+import { hasPassed } from "@/lib/date"
 import { httpGetMeetups } from "@/lib/httpRequests/meetups"
 
 import type { MeetupWithAttendees } from "@/types/general"
@@ -33,10 +34,7 @@ export function useProfile() {
   )
 
   const pastMeetups = useMemo(
-    () =>
-      registeredMeetups?.filter(
-        (meetup) => new Date(meetup.date).getTime() < Date.now()
-      ),
+    () => registeredMeetups?.filter((meetup) => hasPassed(meetup.date)),
     [registeredMeetups]
   )
 

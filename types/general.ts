@@ -5,5 +5,8 @@ export type MeetupWithAttendees = Prisma.MeetupGetPayload<{
     attendees: {
       select: { id: true }
     }
+    reviews: true
   }
 }>
+
+export type ReviewOptions = { comment: string; rating: number }
