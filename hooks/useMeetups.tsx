@@ -9,7 +9,7 @@ import {
   meetupFilterReducer,
 } from "@/reducers/meetupFilterReducer"
 
-import type { Meetup } from "@prisma/client"
+import type { MeetupWithAttendees } from "@/types/general"
 
 export function useMeetups() {
   const [meetupFilterState, dispatchMeetupFilter] = useReducer(
@@ -17,7 +17,9 @@ export function useMeetups() {
     initalStateMeetupFilterReducer
   )
 
-  const { data, error, isLoading } = useQuery<{ meetups: Meetup[] }>({
+  const { data, error, isLoading } = useQuery<{
+    meetups: MeetupWithAttendees[]
+  }>({
     queryKey: ["meetups"],
     queryFn: httpGetMeetups,
   })
@@ -40,7 +42,7 @@ export function useMeetups() {
     [data]
   )
 
-  function filterBySearch(meetup: Meetup, searchQuery: string) {
+  function filterBySearch(meetup: MeetupWithAttendees, searchQuery: string) {
     return (
       !searchQuery ||
       meetup.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -50,15 +52,15 @@ export function useMeetups() {
     )
   }
 
-  function filterByDate(meetup: Meetup, date: string) {
+  function filterByDate(meetup: MeetupWithAttendees, date: string) {
     return !date || dayjs(meetup.date).format("YYYY-MM-DD") === date
   }
 
-  function filterByCity(meetup: Meetup, city: string) {
+  function filterByCity(meetup: MeetupWithAttendees, city: string) {
     return !city || meetup.city.toLowerCase().includes(city.toLowerCase())
   }
 
-  function filterByCategory(meetup: Meetup, category: string) {
+  function filterByCategory(meetup: MeetupWithAttendees, category: string) {
     return (
       !category ||
       meetup.category.toLowerCase().includes(category.toLowerCase())
@@ -84,7 +86,7 @@ export function useMeetups() {
   const matchingMeetups = useMemo(
     () =>
       data?.meetups.filter(
-        (meetup: Meetup) =>
+        (meetup: MeetupWithAttendees) =>
           filterBySearch(meetup, meetupFilterState.searchQuery) &&
           filterByDate(meetup, meetupFilterState.date) &&
           filterByCity(meetup, meetupFilterState.city) &&

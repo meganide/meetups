@@ -43,6 +43,26 @@ const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  callbacks: {
+    jwt({ token, user }) {
+      // User and account is only returned on sign in
+      // Token is returned for every authentication session
+      if (user) {
+        token.id = user.id
+        token.email = user.email
+      }
+
+      return token
+    },
+    async session({ token, session }) {
+      if (token) {
+        session.user.id = token.id
+        session.user.email = token.email
+      }
+
+      return session
+    },
+  },
 }
 
 export default authOptions
