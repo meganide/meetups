@@ -2,6 +2,7 @@
 import * as React from "react"
 
 import MUIAutocomplete from "@mui/material/Autocomplete"
+import Chip from "@mui/material/Chip"
 import Stack from "@mui/material/Stack"
 import TextField from "@mui/material/TextField"
 
@@ -29,6 +30,16 @@ export default function Autocomplete({
         }
         options={options}
         renderInput={(params) => <TextField {...params} label={label} />}
+        renderOption={(props, option) => (
+          <li {...props} key={option}>
+            {option}
+          </li>
+        )}
+        renderTags={(tagValue, getTagProps) =>
+          tagValue.map((option, index) => (
+            <Chip {...getTagProps({ index })} key={option} label={option} />
+          ))
+        }
       />
     </Stack>
   )
