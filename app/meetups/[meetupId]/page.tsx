@@ -7,6 +7,9 @@ import { useQuery } from "@tanstack/react-query"
 import Image from "next/image"
 import Link from "next/link"
 
+import { httpGetMeetups } from "@/lib/httpRequests/meetups"
+
+import type { MeetupWithAttendees } from "@/types/general"
 import type { Meetup } from "@prisma/client"
 
 export default function MeetupPage({
@@ -14,8 +17,12 @@ export default function MeetupPage({
 }: {
   params: { meetupId: string }
 }) {
-  const { data } = useQuery<{ meetups: Meetup[] }>({ queryKey: ["meetups"] })
-  console.log(data)
+  const { data } = useQuery<{
+    meetups: MeetupWithAttendees[]
+  }>({
+    queryKey: ["meetups"],
+    queryFn: httpGetMeetups,
+  })
 
   const meetup = useMemo(
     () => data?.meetups.find((meetup) => meetup.id === params.meetupId),
