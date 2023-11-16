@@ -34,10 +34,12 @@ export default function Meetupcard({
             </h2>
             <p className="text-gray-500">{meetup.location}</p>
           </div>
-          <div className="flex items-center justify-between text-sm text-gray-600">
-            <p>{meetup.city}</p>
-            <p>{meetup.numberOfTickets} tickets</p>
-          </div>
+          {!hideTicketsLeft && (
+            <div className="flex items-center justify-between text-sm text-gray-600">
+              <p>{meetup.city}</p>
+              <p>{meetup.numberOfTickets} tickets</p>
+            </div>
+          )}
         </section>
       </article>
     </Link>
