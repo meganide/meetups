@@ -1,15 +1,15 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
 
 export function useDrawer() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
 
-  const handleDrawerClose = () => {
+  const handleDrawerClose = useCallback(() => {
     setOpen(false)
-  }
+  }, [])
 
-  const handleDrawerOpen = () => {
+  const handleDrawerOpen = useCallback(() => {
     setOpen(true)
-  }
+  }, [])
 
   return { open, handleDrawerClose, handleDrawerOpen }
 }

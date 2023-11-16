@@ -36,7 +36,7 @@ export default function MainLayout({ children, drawerWidth }: MainLayoutProps) {
         open={open}
         onDrawerClose={handleDrawerClose}
       />
-      <Main open={open} drawerWidth={drawerWidth}>
+      <Main open={open} drawerwidth={drawerWidth}>
         <DrawerHeader />
         {children}
       </Main>
